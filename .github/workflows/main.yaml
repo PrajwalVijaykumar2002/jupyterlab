@@ -35,7 +35,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} 
-        with:
-          args: >
-            -Dsonar.organization=YOUR_SONARCLOUD_ORGANIZATION_KEY 
-            -Dsonar.projectKey=YOUR_SONARCLOUD_PROJECT_KEY
+       
