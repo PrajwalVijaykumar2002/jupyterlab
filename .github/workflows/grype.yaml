@@ -18,13 +18,12 @@ jobs:
       - name: 🔎 Run Grype Dependency Scan (SCA)
         uses: anchore/scan-action@v6
         id: scan
-        # THIS IS CRITICAL: It allows the workflow to continue, 
-        # even if high-severity vulnerabilities are found (and the step exits with an error code).
-        continue-on-error: true 
+        continue-on-error: true # Keep this to ensure the report upload runs
         with:
           path: "."
-          output-format: json # Changing to 'json' for simpler console printing
-          fail-on-severity: high 
+          output-format: json 
+          # FIX: Replaced 'fail-on-severity' with the correct parameter 'severity-cutoff'
+          severity-cutoff: high
 
       - name: 📤 Print Grype Report Content
         # This step now runs because the previous step is allowed to fail
