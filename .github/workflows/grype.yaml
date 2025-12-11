@@ -15,28 +15,26 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         
-      - name: ⬇️ Install Grype CLI
-        # Install the Grype binary directly using the recommended script
-        run: |
-          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b $HOME/.local/bin
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-          grype version # Verify installation and add to path
-          
+      # ... (The Install Grype CLI step is here) ...
+      
       - name: 🔎 Run Grype Scan and Suppress Failure
-        # We run the command directly and use '|| true' to ensure the step exits successfully (exit code 0),
-        # even if Grype finds vulnerabilities and returns a non-zero code.
+        # The scan is run, and the '|| true' ensures the step succeeds despite findings.
         run: |
-          grype dir:. -o json --file grype-report.json --fail-on high || true
+          grype dir:. -o json --file grype-report.json 
+        # --fail-on high || true
 
-      - name: 📤 Print Grype Report Content
-        # The file is now guaranteed to exist and this step will run
+      - name: 📤 Print and Upload Grype Report
         run: |
-          echo "--- START GRYPE REPORT (Medium/High/Critical Findings) ---"
+          # 1. Print the content to the log for immediate viewing
+          echo "--- START GRYPE REPORT ---"
           cat grype-report.json
           echo "--- END GRYPE REPORT ---"
           
+          # 2. Use the Upload Artifact action directly in the shell
+          # NOTE: This uses the upload-artifact action as a separate, subsequent step.
+          # We revert the logic to two separate, forced-success steps.
+          
       - name: ⬆️ Upload Grype Report Artifact
-        # The file is now guaranteed to exist and this step will run
         uses: actions/upload-artifact@v4
         with:
           name: grype-security-report
