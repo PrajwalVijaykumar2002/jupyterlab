@@ -31,3 +31,12 @@ jobs:
         # Scans all files recursively, outputs to JSON.
         # The '|| true' ensures the pipeline does not stop if findings are present.
         run: bandit -r . -f json -o bandit-report.json || true
+
+        # ... [The Run Bandit Scan step is here] ...
+      
+      - name: ⬆️ Upload Bandit Report Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bandit-security-report
+          path: bandit-report.json
+          # Artifacts are typically used to store files created during a job
