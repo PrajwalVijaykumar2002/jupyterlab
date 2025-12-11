@@ -18,23 +18,23 @@ jobs:
       - name: 🔎 Run Grype Dependency Scan (SCA)
         uses: anchore/scan-action@v6
         id: scan
-        continue-on-error: true # Keep this to ensure the report upload runs
+        # Note: Removing 'continue-on-error: true' and 'severity-cutoff' because we will handle the error in the shell command
         with:
           path: "."
           output-format: json 
-          # FIX: Replaced 'fail-on-severity' with the correct parameter 'severity-cutoff'
-          severity-cutoff: high
+          # We must specify the output file name so the next step can find it, 
+          # otherwise, the action might not generate the 'output-file' variable on failure.
+          output-file: grype-report.json
 
       - name: 📤 Print Grype Report Content
-        # This step now runs because the previous step is allowed to fail
+        # Run the cat command, but force it to succeed using '|| true'
         run: |
           echo "--- START GRYPE REPORT ---"
-          # The scan action saves the file to the path in the output variable
-          cat ${{ steps.scan.outputs.output-file }} 
+          cat grype-report.json || true
           echo "--- END GRYPE REPORT ---"
           
       - name: ⬆️ Upload Grype Report Artifact
         uses: actions/upload-artifact@v4
         with:
           name: grype-security-report
-          path: ${{ steps.scan.outputs.output-file }}
+          path: grype-report.json
