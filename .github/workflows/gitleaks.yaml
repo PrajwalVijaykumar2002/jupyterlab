@@ -1,0 +1,30 @@
+# .github/workflows/gitleaks.yaml
+name: 🔐 DevSecOps - Secret Scanner (Gitleaks)
+
+# This workflow will run anytime code is pushed to the main branch
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  secret_scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        # Gitleaks needs the full Git history to check for leaked secrets,
+        # so we fetch the entire history with fetch-depth: 0
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
+          
+      - name: 🔐 Run Gitleaks Scan
+        uses: zricethezav/gitleaks-action@v10
+        with:
+          # Use the configuration file you created
+          config: .gitleaks.yaml 
+        # Crucial for the assignment: Allow the pipeline to finish 
+        # even if a secret is found, so you get the data.
+        continue-on-error: true

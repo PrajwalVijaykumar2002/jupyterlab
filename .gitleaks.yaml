@@ -1,0 +1,22 @@
+# .gitleaks.yaml
+title: "JupyterLab DevSecOps Allowlist"
+
+extend:
+  useDefault: true
+
+allowlist:
+  # Paths to ignore during the scan to avoid false positives.
+  paths:
+    - (^|/)\.git/
+    - (^|/)node_modules/
+    - (^|/)dist/
+    - (^|/)lib/
+    - (^|/)test/.*\.txt
+    - (^|/)\.gitleaks.yaml  
+    - (^|/)\.gitignore
+    - (^|/)\.npmrc
+    - (^|/)\.eslintrc.js
+    - (^|/)\.prettierrc.js
+    - (^|/)CONTRIBUTING.md
+    - (^|/)yarn\.lock
+    - (^|/)package-lock\.json
