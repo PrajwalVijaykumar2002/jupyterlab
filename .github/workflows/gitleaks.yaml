@@ -24,7 +24,8 @@ jobs:
         uses: zricethezav/gitleaks-action@v2
         with:
           # Tells Gitleaks to use the custom YAML configuration file
-          config: .gitleaks.yaml 
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          #config: .gitleaks.yaml 
         # continue-on-error: true ensures the pipeline completes, even if a secret is found, 
         # so you get your data for the presentation.
         continue-on-error: true
