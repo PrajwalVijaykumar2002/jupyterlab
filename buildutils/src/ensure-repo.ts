@@ -513,7 +513,7 @@ function ensureCorePackage(corePackage: any, corePaths: string[]) {
   });
 
   // These are not sorted when writing out by default
-  singletonPackages.sort();
+  singletonPackages.sort((a, b) => a.localeCompare(b));
 
   // Populate the yarn resolutions. First we make sure direct packages have
   // resolutions.

@@ -196,7 +196,7 @@ async function handlePackage(
       }
     } else {
       const keys = Object.keys(deps);
-      keys.sort();
+      keys.sort((a, b) => a.localeCompare(b));
       for (const dep of keys) {
         if (dep.match(name)) {
           const { updated, log } = await handleDependency(
@@ -241,7 +241,7 @@ commander
       const pkg = args.regex ? new RegExp(_.escapeRegExp(name)) : name;
 
       if (args.lerna) {
-        const paths = utils.getLernaPaths(basePath).sort();
+        const paths = utils.getLernaPaths(basePath).sort((a, b) => a.localeCompare(b));
 
         // We use a loop instead of Promise.all so that the output is in
         // alphabetical order.

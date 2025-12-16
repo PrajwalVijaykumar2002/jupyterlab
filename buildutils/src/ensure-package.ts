@@ -98,13 +98,11 @@ export async function ensurePackage(
           Object.keys(backwardVersions[data.name]).includes(name)
         ) {
           messages.push(
-            `Updated dependency: ${name}@${
-              backwardVersions[data.name][name]
+            `Updated dependency: ${name}@${backwardVersions[data.name][name]
             } || ${seenDeps[name]}`
           );
-          deps[name] = `${backwardVersions[data.name][name]} || ${
-            seenDeps[name]
-          }`;
+          deps[name] = `${backwardVersions[data.name][name]} || ${seenDeps[name]
+            }`;
         } else {
           messages.push(`Updated dependency: ${name}@${seenDeps[name]}`);
           deps[name] = seenDeps[name];
@@ -122,8 +120,7 @@ export async function ensurePackage(
         .includes(backwardVersions[data.name][name]);
       if (!oneOf) {
         messages.push(
-          `Updated backward dependency: ${name}@${
-            backwardVersions[data.name][name]
+          `Updated backward dependency: ${name}@${backwardVersions[data.name][name]
           } || ${deps[name]}`
         );
         deps[name] = `${backwardVersions[data.name][name]} || ${deps[name]}`;
@@ -171,8 +168,8 @@ export async function ensurePackage(
     let entryPoint = fs.existsSync(path.join(pkgPath, 'src/index.ts'))
       ? 'src/index.ts'
       : fs.existsSync(path.join(pkgPath, 'src/index.tsx'))
-      ? 'src/index.tsx'
-      : null;
+        ? 'src/index.tsx'
+        : null;
     if (entryPoint) {
       utils.writeJSONFile(path.join(pkgPath, 'typedoc.json'), {
         extends: ['../../typedoc.base.json'],
@@ -213,7 +210,7 @@ export async function ensurePackage(
   }
 
   const names = Array.from(new Set(imports))
-    .sort()
+    .sort((a, b) => a.localeCompare(b))
     .map(name => {
       const parts = name.split('/');
       if (name.indexOf('@') === 0) {
@@ -403,8 +400,8 @@ export async function ensurePackage(
   const published = new Set<string>(
     data.files
       ? data.files.reduce((acc: string[], curr: string) => {
-          return acc.concat(glob.sync(path.join(pkgPath, curr)));
-        }, [])
+        return acc.concat(glob.sync(path.join(pkgPath, curr)));
+      }, [])
       : []
   );
 
@@ -499,8 +496,8 @@ export async function ensurePackage(
       const sideEffects = new Set<string>(
         data.sideEffects
           ? data.sideEffects.reduce((acc: string[], curr: string) => {
-              return acc.concat(glob.sync(path.join(pkgPath, curr)));
-            }, [])
+            return acc.concat(glob.sync(path.join(pkgPath, curr)));
+          }, [])
           : []
       );
       for (const style of styles) {
@@ -755,8 +752,8 @@ export async function ensureUiComponents(
   });
 
   // sort the statements and then join them
-  const svgImportStatements = _svgImportStatements.sort().join('\n');
-  const labiconConstructions = _labiconConstructions.sort().join('\n');
+  const svgImportStatements = _svgImportStatements.sort((a, b) => a.localeCompare(b)).join('\n');
+  const labiconConstructions = _labiconConstructions.sort((a, b) => a.localeCompare(b)).join('\n');
 
   // generate the actual contents of the iconImports file
   const iconImportsPath = path.join(iconSrcDir, 'iconimports.ts');
@@ -791,8 +788,8 @@ export async function ensureUiComponents(
   });
 
   // sort the statements and then join them
-  const iconCSSUrls = _iconCSSUrls.sort().join('\n');
-  const iconCSSDeclarations = _iconCSSDeclarations.sort().join('\n\n');
+  const iconCSSUrls = _iconCSSUrls.sort((a, b) => a.localeCompare(b)).join('\n');
+  const iconCSSDeclarations = _iconCSSDeclarations.sort((a, b) => a.localeCompare(b)).join('\n\n');
 
   // generate the actual contents of the iconCSSClasses file
   const iconCSSClassesPath = path.join(iconCSSDir, 'deprecated.css');

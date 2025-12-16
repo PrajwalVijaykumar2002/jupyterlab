@@ -77,8 +77,12 @@ commander
     // Fix up any tagging issues.
     if (!options.skipTags && !options.dryRun) {
       const basePath = path.resolve('.');
-      const paths = utils.getLernaPaths(basePath).sort();
+      const paths = utils
+        .getLernaPaths(basePath)
+        .sort((a, b) => a.localeCompare(b));
+
       const cmds = await Promise.all(paths.map(handlePackage));
+
       cmds.forEach(cmdList => {
         cmdList.forEach(cmd => {
           if (!options.dryRun) {
@@ -88,6 +92,7 @@ commander
           }
         });
       });
+
     }
 
     // Make sure all current JS packages are published.

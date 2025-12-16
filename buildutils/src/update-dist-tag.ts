@@ -72,7 +72,7 @@ points to the latest prerelease after it.`
     let cmds: string[][] = [];
     let paths: string[] = [];
     if (args.lerna) {
-      paths = utils.getLernaPaths(basePath).sort();
+      paths = utils.getLernaPaths(basePath).sort((a, b) => a.localeCompare(b));
       cmds = await Promise.all(paths.map(handlePackage));
     }
     cmds.push(await handlePackage(basePath));
