@@ -119,22 +119,25 @@ export class LayoutRestorer implements ILayoutRestorer {
     if (options.mode) {
       this._mode = options.mode;
     }
-
-    void this._first
-      .then(() => {
-        this._firstDone = true;
-      })
-      .then(() => Promise.all(this._promises))
-      .then(() => {
-        this._promisesDone = true;
-
-        // Release the tracker set.
-        this._trackers.clear();
-      })
-      .then(() => {
-        this._restored.resolve(void 0);
-      });
   }
+
+  initialize(): void {
+    void this._initializeAsync();
+  }
+
+  private async _initializeAsync(): Promise<void> {
+    await this._first;
+    this._firstDone = true;
+
+    await Promise.all(this._promises);
+    this._promisesDone = true;
+
+    // Release the tracker set
+    this._trackers.clear();
+
+    this._restored.resolve(void 0);
+  }
+
 
   /**
    * Whether full layout restoration is deferred and is currently incomplete.
@@ -438,10 +441,10 @@ export class LayoutRestorer implements ILayoutRestorer {
     const widgets = !Array.isArray(area.widgets)
       ? null
       : area.widgets
-          .map(name =>
-            internal.has(`${name}`) ? internal.get(`${name}`) : null
-          )
-          .filter(widget => !!widget);
+        .map(name =>
+          internal.has(`${name}`) ? internal.get(`${name}`) : null
+        )
+        .filter(widget => !!widget);
     return {
       currentWidget: currentWidget!,
       size: area.size ?? 0.0,
@@ -517,10 +520,10 @@ export class LayoutRestorer implements ILayoutRestorer {
     const widgets = !Array.isArray(area.widgets)
       ? null
       : area.widgets
-          .map(name =>
-            internal.has(`${name}`) ? internal.get(`${name}`) : null
-          )
-          .filter(widget => !!widget);
+        .map(name =>
+          internal.has(`${name}`) ? internal.get(`${name}`) : null
+        )
+        .filter(widget => !!widget);
     const widgetStates = area.widgetStates as {
       [id: string]: {
         sizes: number[] | null;
