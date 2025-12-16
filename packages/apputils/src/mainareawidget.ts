@@ -24,8 +24,7 @@ const USE_CAPTURE = true;
  */
 export class MainAreaWidget<T extends Widget = Widget>
   extends Widget
-  implements Printing.IPrintable
-{
+  implements Printing.IPrintable {
   /**
    * Construct a new main area widget.
    *
@@ -75,40 +74,10 @@ export class MainAreaWidget<T extends Widget = Widget>
     this.title.closable = true;
     this.title.changed.connect(this._updateContentTitle, this);
 
+    // Append spinner immediately if reveal is requested
     if (options.reveal) {
       this.node.appendChild(this._spinner.node);
-      this._revealed = options.reveal
-        .then(() => {
-          if (content.isDisposed) {
-            this.dispose();
-            return;
-          }
-          content.disposed.connect(() => this.dispose());
-          const active = document.activeElement === this._spinner.node;
-          this._disposeSpinner();
-          this._isRevealed = true;
-          if (active) {
-            this._focusContent();
-          }
-        })
-        .catch(e => {
-          // Show a revealed promise error.
-          const error = new Widget();
-          error.addClass('jp-MainAreaWidget-error');
-          // Show the error to the user.
-          const pre = document.createElement('pre');
-          pre.textContent = String(e);
-          error.node.appendChild(pre);
-          BoxLayout.setStretch(error, 1);
-          this._disposeSpinner();
-          content.dispose();
-          this._content = null!;
-          toolbar.dispose();
-          this._toolbar = null!;
-          layout.addWidget(error);
-          this._isRevealed = true;
-          throw error;
-        });
+      this._revealed = this._revealContentAsync(content, toolbar, layout, options.reveal);
     } else {
       // Handle no reveal promise.
       this._spinner.dispose();
@@ -116,6 +85,54 @@ export class MainAreaWidget<T extends Widget = Widget>
       content.disposed.connect(() => this.dispose());
       this._isRevealed = true;
       this._revealed = Promise.resolve(undefined);
+    }
+  }
+
+  /**
+   * Async method for content reveal
+   */
+  private async _revealContentAsync(
+    content: Widget,
+    toolbar: any,
+    layout: any,
+    revealPromise: Promise<void>
+  ): Promise<void> {
+    try {
+      await revealPromise;
+
+      if (content.isDisposed) {
+        this.dispose();
+        return;
+      }
+
+      content.disposed.connect(() => this.dispose());
+
+      const active = document.activeElement === this._spinner.node;
+      this._disposeSpinner();
+      this._isRevealed = true;
+
+      if (active) {
+        this._focusContent();
+      }
+    } catch (e) {
+      // Show a revealed promise error.
+      const error = new Widget();
+      error.addClass('jp-MainAreaWidget-error');
+
+      const pre = document.createElement('pre');
+      pre.textContent = String(e);
+      error.node.appendChild(pre);
+      BoxLayout.setStretch(error, 1);
+
+      this._disposeSpinner();
+      content.dispose();
+      this._content = null!;
+      toolbar.dispose();
+      this._toolbar = null!;
+      layout.addWidget(error);
+      this._isRevealed = true;
+
+      throw error;
     }
   }
 
@@ -296,6 +313,13 @@ export class MainAreaWidget<T extends Widget = Widget>
       this._focusContent();
     }
   };
+
+  /**
+   * Dispose of the resources held by the widget.
+   */
+  dispose(): void {
+    super.dispose();
+  }
 }
 
 /**

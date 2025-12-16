@@ -37,10 +37,19 @@ export class Licenses extends SplitPanel {
     this.initGrid();
     this.initLicenseText();
     this.setRelativeSizes([1, 2, 3]);
-    void this.model.initLicenses().then(() => this._updateBundles());
+    this.initialize();
     this.model.trackerDataChanged.connect(() => {
       this.title.label = this.model.title;
     });
+  }
+
+  initialize(): void {
+    void this._initializeAsync();
+  }
+
+  private async _initializeAsync(): Promise<void> {
+    await this.model.initLicenses();
+    this._updateBundles();
   }
 
   /**
@@ -775,9 +784,8 @@ export namespace Licenses {
       if (currentPackage) {
         const { name, versionInfo, licenseId, extractedText } = currentPackage;
         head = `${name} v${versionInfo}`;
-        quote = `${trans.__('License')}: ${
-          licenseId || trans.__('No License ID found')
-        }`;
+        quote = `${trans.__('License')}: ${licenseId || trans.__('No License ID found')
+          }`;
         code = extractedText || trans.__('No License Text found');
       }
       return [

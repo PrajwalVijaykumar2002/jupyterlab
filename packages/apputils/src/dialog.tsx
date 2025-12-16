@@ -142,7 +142,16 @@ export class Dialog<T> extends Widget {
     this._focusNodeSelector = options.focusNodeSelector;
 
     // Add new dialogs to the tracker.
-    void Dialog.tracker.add(this);
+    this._initialize();
+
+  }
+
+  private _initialize(): void {
+    void this._initializeAsync();
+  }
+
+  private async _initializeAsync(): Promise<void> {
+    await Dialog.tracker.add(this);
   }
 
   /**
@@ -1166,3 +1175,7 @@ namespace Private {
     return node.querySelectorAll(candidateSelectors)[0] as HTMLElement;
   }
 }
+function initialize() {
+  throw new Error('Function not implemented.');
+}
+
