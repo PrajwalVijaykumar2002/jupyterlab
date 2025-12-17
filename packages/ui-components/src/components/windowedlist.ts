@@ -37,15 +37,18 @@ let passiveIfSupported: boolean | { passive: boolean } = false;
 
 try {
   // @ts-expect-error unknown signature
-  window.addEventListener(
-    'test',
-    null,
-    Object.defineProperty({}, 'passive', {
-      get: function () {
-        passiveIfSupported = { passive: true };
-      }
-    })
-  );
+  if (typeof Object !== 'undefined' && Object.defineProperty) {
+    window.addEventListener(
+      'test',
+      null as any,
+      Object.defineProperty({}, 'passive', {
+        get() {
+          passiveIfSupported = { passive: true };
+          return true;
+        }
+      })
+    );
+  }
 } catch (err) {
   // pass no-op
 }
@@ -1729,11 +1732,11 @@ export class WindowedList<
   private _scrollRepaint: number | null;
   private _scrollToItem:
     | [
-        number,
-        WindowedList.ScrollToAlign,
-        number,
-        WindowedList.BaseScrollToAlignment | undefined
-      ]
+      number,
+      WindowedList.ScrollToAlign,
+      number,
+      WindowedList.BaseScrollToAlignment | undefined
+    ]
     | null;
   private _scrollUpdateWasRequested: boolean;
   private _updater: Throttler;
