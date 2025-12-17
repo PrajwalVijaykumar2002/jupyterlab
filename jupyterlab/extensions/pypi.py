@@ -382,12 +382,12 @@ class PyPIExtensionManager(ExtensionManager):
             The action result
         """
         current_loop = tornado.ioloop.IOLoop.current()
-        with (
-            tempfile.TemporaryDirectory() as ve_dir,
-            tempfile.NamedTemporaryFile(mode="w+", dir=ve_dir, delete=False) as fconstraint,
-        ):
-            fconstraint.write(f"jupyterlab=={__version__}")
-            fconstraint.flush()
+
+        with tempfile.TemporaryDirectory() as ve_dir:
+        constraint_path = os.path.join(ve_dir, "constraints.txt")
+
+        async with await anyio.open_file(constraint_path, "w+") as fconstraint:
+            await fconstraint.write(f"jupyterlab=={__version__}")
 
             cmdline = [
                 sys.executable,
