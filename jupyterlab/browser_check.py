@@ -14,6 +14,7 @@ import shutil
 import subprocess
 import sys
 import time
+import anyio
 from concurrent.futures import ThreadPoolExecutor
 from os import path as osp
 
@@ -127,7 +128,7 @@ async def run_test_async(app, func):
         app.log.error(str(e))
         result = 1
     finally:
-        time.sleep(2)
+        await anyio.sleep(2)
         os._exit(result)
 
 
